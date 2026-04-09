@@ -1,0 +1,90 @@
+---
+import '../styles/global.css';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCollection } from 'astro:content';
+
+const pageTitle = "corii | inventory";
+const allPosts = await getCollection('inventory');
+const sortedPosts = allPosts.sort((a, b) => b.data.postDate.getTime() - a.data.postDate.getTime());
+
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <h1>{pageTitle}</h1>
+  <p>
+    A catalog with some of the technology I own.
+  </p>
+  <section>
+    {
+      sortedPosts.map((post) => (
+        <a href={`/posts/${post.id}`} class="inventory-item">
+          <article>
+            {/*
+            <img style="float: right;" src={item.frontmatter.image.url} width="225" height="150" alt={item.frontmatter.image.alt} />
+            image embed to be implemented
+            */}
+            <h2>{post.data.title}</h2>
+            <p class="item-date">
+              Date Added:
+              {new Date(post.data.postDate).toLocaleDateString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+              })}
+            </p>
+            <p class="item-excerpt">{post.data.description}</p>
+          </article>
+        </a>
+      ))
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .inventory-item {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    text-decoration: none;
+  }
+  .inventory-item h2 {
+    margin-bottom: 0.5rem;
+    color: #FF3131;
+    font-family: "nunito",
+      sans-serif;
+    font-weight: 700;
+  }
+  .item-date {
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 650;
+    color: #a0aec0;
+    font-family: "nunito",
+      sans-serif;
+  }
+  .item-excerpt {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #afc6ed;
+    font-family: "nunito",
+      sans-serif;
+  }
+  article {
+    background-color: rgba(0, 0, 0, 0.153);
+    border-radius: 15px;
+    padding: 0.8rem;
+    transition: background-color 0.20s ease-in-out;
+    text-decoration: none;
+  }
+
+  article:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: none;
+  }
+
+  article a {
+    text-decoration: none;
+  }
+</style>
